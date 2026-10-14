@@ -204,6 +204,12 @@ The repair pass also has an obvious next move I did not take: right now it re-re
 
 After that: reading NF-e XML when the supplier sends one (exact beats inferred, always), and tracking the same item across months so the tool can say *this went up 9% since August* — which is the question underneath the whole chore.
 
+## The session itself
+
+The challenge notes that embedding the agent session helps judges follow the process, so here is this one. It includes the stretch where my own test-image generator painted a solid grey wedge over the product names and I spent a run blaming the model for not reading data that was not there.
+
+{% agent_session notinha-reading-supplier-invoices-with-gemma-3-locally-and-repairing-what-it-misreads-7lmwue %}
+
 ---
 
 Built with Claude Code. Code is MIT.
