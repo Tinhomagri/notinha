@@ -14,11 +14,17 @@ Fornecedor: SERRA AZUL LTDA   Doc: 018447   Data: 13/10/2026
 ITEM                                    QTD        UNIT     CUSTO USO
 REFRIGERANTE COLA CX 12X1L                4        89,9       7,492/L
 OLEO DE SOJA CX 20X900ML                  2         118       6,556/L
-QUEIJO MUSSARELA FATIADO               12,5        38,9       38,9/KG
+QUEIJO MUSSARELA FATIADO                  2        12,5       12,5/KG
+                                 ⚠ qtd x unitário = 25.00, nota diz 486.25
 PAPEL TOALHA FD 6X2 ROLOS                 5        33,6        2,8/UN
 ...
+⚠ 1 item(ns) pedem conferência.
+
 CSV: nota-do-fornecedor.csv
 ```
+
+A linha marcada vai pro CSV **sem quantidade e sem custo**, com o motivo na
+descrição. O importador recusa aquela linha; as outras entram.
 
 ## O problema
 

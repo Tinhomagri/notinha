@@ -4,6 +4,9 @@ published: false
 tags: hf26challenge, ai, opensource, python
 ---
 
+> **RASCUNHO — falta antes de publicar:** (1) publicar o repositório e trocar `__REPO_URL__`; (2) subir `docs/notinha-ui.png` pelo editor do DEV e trocar `__IMAGEM__`; (3) remover este aviso.
+
+
 *This is a submission for the [Hacktoberfest Open-Source AI Challenge: Week 2](https://dev.to/challenges/hf26), Side Hustle theme.*
 
 ## What I Built
@@ -26,7 +29,7 @@ $ notinha nota-do-fornecedor.jpg
 lendo nota-do-fornecedor.jpg com gemma3:4b (local)...
 
 Fornecedor: SERRA AZUL LTDA   Doc: PEDIDO DE VENDA No 018447   Data: 13/10/2026
-10 itens · total lido R$ 2329,80
+10 itens · total lido R$ 2329,8
 
 ITEM                                    QTD        UNIT     CUSTO USO
 REFRIGERANTE COLA CX 12X1L                4        89,9       7,492/L
@@ -38,7 +41,7 @@ BATATA PRE-FRITA CONG PCT 2.5KG          10        31,4       31,4/UN
 PAO BRIOCHE BURGER PCT C/ 12             15        14,2       14,2/UN
 ALFACE AMERICANA UNIDADE                 24         4,3        4,3/UN
 TOMATE SALADA CAIXA 20KG                  1          96        4,8/KG
-MOLHO BARBECUE GALAO 3,2KG                3       42,75      42,75/UN
+MOLHO BARBECUE GALAO 3.2KG                3       42,75      42,75/UN
 PAPEL TOALHA FD 6X2 ROLOS                 5        33,6        2,8/UN
 
 ⚠ 1 item(ns) pedem conferência.
@@ -54,7 +57,7 @@ There is also a drag-and-drop page on `localhost:8777`, because the person who o
 
 ## Demo
 
-![Notinha reading a supplier invoice in the browser: ten line items, the cheese line flagged in orange, and a download button for the import CSV](docs/notinha-ui.png)
+__IMAGEM__ *(screenshot em `docs/notinha-ui.png` no repositório — subir pelo editor do DEV antes de publicar)*
 
 The orange line is the one the model got wrong. It is the only line that does not reach the spreadsheet.
 
