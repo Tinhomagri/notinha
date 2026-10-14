@@ -24,11 +24,20 @@ def escrever_csv(nota: dict, destino: str | Path) -> Path:
     with destino.open("w", encoding="utf-8-sig", newline="") as f:
         escritor = csv.writer(f, delimiter=";")
         escritor.writerow(CABECALHO_ESTOQUE)
+        origem = f"{nota['fornecedor']} {nota['documento']}".strip()
         for item in nota["itens"]:
+            # Linha marcada vai sem número: melhor o importador reclamar de campo
+            # vazio do que entrar custo errado calado na ficha técnica.
+            marcada = bool(item["alertas"])
+            descricao = (
+                f"CONFERIR ({'; '.join(item['alertas'])}) — {origem}"
+                if marcada else origem
+            )
             escritor.writerow([
                 item["descricao"], "insumo", item["unidade_uso"], "", "",
-                f"{nota['fornecedor']} {nota['documento']}".strip(),
-                br(item["quantidade_uso"]), br(item["custo_unidade_uso"]),
+                descricao,
+                "" if marcada else br(item["quantidade_uso"]),
+                "" if marcada else br(item["custo_unidade_uso"]),
                 "", "", nota["fornecedor"], "", "",
             ])
     return destino
