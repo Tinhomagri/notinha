@@ -1,0 +1,13 @@
+[project]
+name = "notinha"
+version = "0.1.0"
+description = "Foto da nota do fornecedor vira planilha de custo de insumos, sem sair do seu computador."
+requires-python = ">=3.10"
+dependencies = ["requests>=2.28"]
+
+[project.scripts]
+notinha = "notinha.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
