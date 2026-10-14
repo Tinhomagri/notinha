@@ -53,9 +53,9 @@ There is also a drag-and-drop page on `localhost:8777`, because the person who o
 
 ## Demo
 
-![Notinha reading a supplier invoice in the browser: ten line items, the cheese line flagged in orange, and a button to download the import CSV](https://raw.githubusercontent.com/Tinhomagri/notinha/master/docs/notinha-ui.png)
+![Notinha reading a supplier invoice in the browser: ten line items with cost per unit of use, the cheese line carrying a note that its unit price was re-read and its quantity derived, and a button to download the import CSV](https://raw.githubusercontent.com/Tinhomagri/notinha/master/docs/notinha-ui.png)
 
-The grey `↻` line is the one the first pass read wrong and the second pass recovered. Anything the second pass *cannot* recover stays orange and reaches the CSV with its numbers blank.
+The `↻` under the cheese is the whole audit trail: *unitário relido (38,9); quantidade calculada: 486,25 ÷ 38,9*. The first pass read that row wrong, the second pass recovered it, and the line says so rather than looking like the other nine. Anything the second pass **cannot** recover stays flagged in orange and reaches the CSV with its numbers blank.
 
 Repository: **https://github.com/Tinhomagri/notinha**
 
