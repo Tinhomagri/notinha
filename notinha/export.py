@@ -64,6 +64,8 @@ def relatorio(nota: dict) -> str:
         )
         for alerta in item["alertas"]:
             linhas.append(f"{' ' * largura}  ⚠ {alerta}")
+        for nota_item in item.get("notas", []):
+            linhas.append(f"{' ' * largura}  ↻ {nota_item}")
     if nota["itens_com_alerta"]:
         linhas += ["", f"⚠ {nota['itens_com_alerta']} item(ns) pedem conferência."]
     return "\n".join(linhas)

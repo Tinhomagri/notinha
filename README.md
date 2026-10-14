@@ -16,17 +16,17 @@ Fornecedor: SERRA AZUL LTDA   Doc: 018447   Data: 13/10/2026
 ITEM                                    QTD        UNIT     CUSTO USO
 REFRIGERANTE COLA CX 12X1L                4        89,9       7,492/L
 OLEO DE SOJA CX 20X900ML                  2         118       6,556/L
-QUEIJO MUSSARELA FATIADO                  2        12,5       12,5/KG
-                                 ⚠ qtd x unitário = 25.00, nota diz 486.25
+QUEIJO MUSSARELA FATIADO               12,5        38,9       38,9/KG
+                                 ↻ unitário relido (38,9); quantidade calculada: 486,25 ÷ 38,9
 PAPEL TOALHA FD 6X2 ROLOS                 5        33,6        2,8/UN
 ...
-⚠ 1 item(ns) pedem conferência.
-
 CSV: nota-do-fornecedor.csv
 ```
 
-A linha marcada vai pro CSV **sem quantidade e sem custo**, com o motivo na
-descrição. O importador recusa aquela linha; as outras entram.
+A linha do queijo saiu errada na primeira leitura. A conferência aritmética
+pegou, a segunda leitura consertou, e o `↻` conta de onde veio cada número.
+O que a segunda leitura **não** conserta continua marcado e vai pro CSV sem
+quantidade e sem custo: o importador recusa aquela linha, as outras entram.
 
 ## O problema
 
@@ -60,11 +60,17 @@ O Notinha faz as duas coisas: lê a tabela e converte embalagem fechada
    unidade, decompõe a embalagem e calcula o custo por unidade de uso.
 3. **Conferência**: `qtd × unitário` tem que bater com o total da linha. Quando
    não bate, a linha sai marcada em vez de entrar calada na planilha.
-4. **Saída** (`export.py`): CSV no layout de importação de estoque do PDV.
+4. **Reparo** (`pipeline.py`): só as linhas marcadas voltam pro modelo, uma de
+   cada vez, com o total da linha como âncora. Leitura focada não sofre o
+   desalinhamento de coluna que derruba a leitura da tabela inteira. Se a
+   segunda leitura fecha a conta, substitui; se não fecha, a linha continua
+   marcada. Nada de reler a nota toda: inferência só onde a verificação falhou.
+5. **Saída** (`export.py`): CSV no layout de importação de estoque do PDV.
 
-O passo 3 é o que torna a ferramenta usável. Modelo pequeno lendo foto torta
-erra dígito de vez em quando — e quando erra, a aritmética da linha denuncia.
-O produto não é "o modelo acerta sempre": é "o que ele erra chega marcado".
+Os passos 3 e 4 são o que torna a ferramenta usável. Modelo pequeno lendo foto
+torta erra dígito — e quando erra, a aritmética da linha denuncia e a releitura
+costuma consertar. O produto não é "o modelo acerta sempre": é "o que ele erra
+chega consertado ou marcado, nunca calado".
 
 ## Instalação
 
@@ -83,6 +89,7 @@ PDF precisa de `pdftoppm` (pacote `poppler-utils`).
 notinha nota.jpg                  # CSV ao lado da nota + relatório no terminal
 notinha nota.pdf -o estoque.csv   # escolhendo o destino
 notinha nota.jpg --json           # JSON cru, pra plugar em outra coisa
+notinha nota.jpg --sem-reparo      # só a primeira leitura, sem reler linha marcada
 python3 -m notinha.server         # interface de arrastar-e-soltar em :8777
 ```
 
@@ -95,7 +102,11 @@ NOTINHA_MODEL=gemma3:12b notinha nota.jpg
 ## Limites conhecidos
 
 - Testado com `gemma3:4b` em CPU: ~1min40 por página num notebook de 15 GB sem
-  placa de vídeo. Com GPU ou com o `12b` fica melhor nos dois sentidos.
+  placa de vídeo, mais ~45s por linha que precisa de releitura. Com GPU ou com
+  o `12b` fica melhor nos dois sentidos.
+- A releitura troca o número só quando a conta fecha E quando ela discorda da
+  primeira leitura. Ainda assim é inferência: o `↻` no relatório existe pra
+  você ver que aquele número foi reconciliado, não copiado do papel.
 - Nota muito amassada, foto com flash estourado ou tabela de duas colunas por
   página ainda confundem a leitura. A conferência aritmética marca boa parte,
   não tudo: **confira o CSV antes de importar.**

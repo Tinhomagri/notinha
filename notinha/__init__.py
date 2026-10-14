@@ -1,5 +1,4 @@
-from .extract import read_nota
-from .normalize import normalizar
+from .pipeline import processar
 from .export import escrever_csv, relatorio
 
-__all__ = ["read_nota", "normalizar", "escrever_csv", "relatorio"]
+__all__ = ["processar", "escrever_csv", "relatorio"]

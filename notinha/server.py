@@ -10,8 +10,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from .export import br, escrever_csv
-from .extract import MODEL, read_nota
-from .normalize import normalizar
+from .extract import MODEL
+from .pipeline import processar
 
 PORTA = 8777
 
@@ -30,6 +30,7 @@ table{width:100%;border-collapse:collapse;margin-top:24px;font-size:.88rem}
 th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--linha)}
 td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
 .alerta{color:var(--acento);font-size:.8rem}
+.nota{opacity:.65;font-size:.8rem}
 a.baixar{display:inline-block;margin-top:18px;background:var(--acento);color:#fff;
 text-decoration:none;padding:10px 18px;border-radius:9px;font-weight:600}
 </style><main>
@@ -56,12 +57,13 @@ async function enviar(f){if(!f)return;
 def _tabela(nota: dict, csv_b64: str) -> str:
     linhas = []
     for item in nota["itens"]:
-        alerta = (
-            f'<div class="alerta">⚠ {html.escape("; ".join(item["alertas"]))}</div>'
-            if item["alertas"] else ""
-        )
+        marca = ""
+        if item["alertas"]:
+            marca = f'<div class="alerta">⚠ {html.escape("; ".join(item["alertas"]))}</div>'
+        elif item.get("notas"):
+            marca = f'<div class="nota">↻ {html.escape("; ".join(item["notas"]))}</div>'
         linhas.append(
-            f'<tr><td>{html.escape(item["descricao"])}{alerta}</td>'
+            f'<tr><td>{html.escape(item["descricao"])}{marca}</td>'
             f'<td class="n">{br(item["quantidade"])} {item["unidade"]}</td>'
             f'<td class="n">{br(item["valor_unitario"])}</td>'
             f'<td class="n">{br(item["custo_unidade_uso"])}/{item["unidade_uso"]}</td></tr>'
@@ -108,7 +110,7 @@ class Handler(BaseHTTPRequestHandler):
             caminho = Path(tmp) / Path(nome).name
             caminho.write_bytes(bruto)
             try:
-                nota = normalizar(read_nota(caminho))
+                nota = processar(caminho)
             except Exception as erro:
                 return self._responder(
                     f"não consegui ler: {erro}", 500, "text/plain; charset=utf-8"

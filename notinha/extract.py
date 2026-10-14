@@ -57,6 +57,25 @@ Regras:
 - Ignore cabeçalho, impostos, frete e o total da nota: só a tabela de produtos.
 """
 
+SCHEMA_LINHA = {
+    "type": "object",
+    "properties": {
+        "quantidade": {"type": "string"},
+        "unidade": {"type": "string"},
+        "valor_unitario": {"type": "string"},
+    },
+    "required": ["quantidade", "unidade", "valor_unitario"],
+}
+
+PROMPT_LINHA = """Na nota da imagem, ache a linha do produto "{descricao}".
+
+Essa linha tem valor total {total}. Olhe só para ela e devolva a quantidade, a
+unidade e o valor unitário dessa linha, copiados exatamente como estão escritos,
+com vírgula decimal.
+
+Atenção à coluna QTD: números como 12,500 são um só valor, não dois.
+Quantidade x valor unitário precisa dar {total}."""
+
 
 def _page_images(path: Path) -> list[bytes]:
     """PDF vira PNG por página; imagem vai direto."""
@@ -71,18 +90,18 @@ def _page_images(path: Path) -> list[bytes]:
         return [p.read_bytes() for p in sorted(Path(tmp).glob("pg*.png"))]
 
 
-def _ask(image: bytes) -> dict:
+def _ask(image: bytes, prompt: str, schema: dict) -> dict:
     resp = requests.post(
         f"{OLLAMA_URL}/api/chat",
         json={
             "model": MODEL,
-            "format": SCHEMA,
+            "format": schema,
             "stream": False,
             "options": {"temperature": 0, "num_ctx": 4096},
             "messages": [
                 {
                     "role": "user",
-                    "content": PROMPT,
+                    "content": prompt,
                     "images": [base64.b64encode(image).decode()],
                 }
             ],
@@ -93,14 +112,22 @@ def _ask(image: bytes) -> dict:
     return json.loads(resp.json()["message"]["content"])
 
 
-def read_nota(path: str | Path) -> dict:
-    """Devolve {fornecedor, documento, data, itens[]} cru, do jeito que o modelo leu."""
+def read_nota(path: str | Path) -> tuple[dict, list[bytes]]:
+    """Leitura crua da nota. Devolve os dados e as páginas, pra poder reler linha."""
     path = Path(path)
     nota = {"fornecedor": "", "documento": "", "data": "", "itens": []}
-    for image in _page_images(path):
-        pagina = _ask(image)
+    imagens = _page_images(path)
+    for indice, image in enumerate(imagens):
+        pagina = _ask(image, PROMPT, SCHEMA)
         for campo in ("fornecedor", "documento", "data"):
             if not nota[campo]:
                 nota[campo] = (pagina.get(campo) or "").strip()
-        nota["itens"].extend(pagina.get("itens") or [])
-    return nota
+        for item in pagina.get("itens") or []:
+            item["pagina"] = indice
+            nota["itens"].append(item)
+    return nota, imagens
+
+
+def reler_linha(image: bytes, descricao: str, total: str) -> dict:
+    """Segunda leitura de UMA linha, ancorada no total que já conferimos."""
+    return _ask(image, PROMPT_LINHA.format(descricao=descricao, total=total), SCHEMA_LINHA)

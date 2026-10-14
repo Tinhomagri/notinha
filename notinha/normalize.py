@@ -104,6 +104,7 @@ def normalizar_item(bruto: dict) -> dict:
         "unidade_uso": unidade,
         "quantidade_uso": quantidade,
         "alertas": [],
+        "notas": [],
     }
 
     # Caixa fechada vira custo por litro/quilo/unidade, que é como a ficha técnica pensa.
