@@ -1,5 +1,7 @@
 # Notinha
 
+[Post no DEV](https://dev.to/wellington_filipe_fccda4c/the-invoice-on-the-counter-a-local-first-cost-reader-for-small-restaurants-3bo) · Hacktoberfest Open-Source AI Challenge 2026, Week 2
+
 Foto da nota do fornecedor vira planilha de custo de insumos. Roda inteiro na sua
 máquina, com modelo aberto. A nota não sobe para lugar nenhum.
 

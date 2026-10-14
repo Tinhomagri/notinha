@@ -1,10 +1,8 @@
 ---
 title: "The invoice on the counter: a local-first cost reader for small restaurants"
-published: false
+published: true
 tags: hf26challenge, ai, opensource, python
 ---
-
-> **RASCUNHO — falta antes de publicar:** (1) publicar o repositório e trocar `__REPO_URL__`; (2) subir `docs/notinha-ui.png` pelo editor do DEV e trocar `__IMAGEM__`; (3) remover este aviso.
 
 
 *This is a submission for the [Hacktoberfest Open-Source AI Challenge: Week 2](https://dev.to/challenges/hf26), Side Hustle theme.*
@@ -57,11 +55,11 @@ There is also a drag-and-drop page on `localhost:8777`, because the person who o
 
 ## Demo
 
-__IMAGEM__ *(screenshot em `docs/notinha-ui.png` no repositório — subir pelo editor do DEV antes de publicar)*
+![Notinha reading a supplier invoice in the browser: ten line items, the cheese line flagged in orange, and a button to download the import CSV](https://raw.githubusercontent.com/Tinhomagri/notinha/master/docs/notinha-ui.png)
 
 The orange line is the one the model got wrong. It is the only line that does not reach the spreadsheet.
 
-Repository: **__REPO_URL__**
+Repository: **https://github.com/Tinhomagri/notinha**
 
 Try it on synthetic data — no real invoice needed, and no real CNPJ, supplier or price anywhere in the repo:
 
